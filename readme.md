@@ -1,3 +1,6 @@
+# Gitlab CLI
+CLI tool to perform tasks as advanced search in your GitLab repositories.
+
 # Getting started
 
 ## Install the dependencies
