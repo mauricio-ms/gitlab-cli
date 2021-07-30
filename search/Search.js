@@ -49,7 +49,7 @@ class Search {
             {
                 name: "loadNextPage",
                 type: "confirm",
-                message: "Want to display more results?",
+                message: "-- MORE --",
             },
         ]);
 
