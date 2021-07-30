@@ -34,7 +34,6 @@ program
 program
     .command("search [term]")
     .description("Search for an term across all your Gitlab repositories")
-    //.option('-s, --status [status]', 'Status inicial do to-do')
     .action(async (term, options) => {
         if (!term) {
             answers = await inquirer.prompt([

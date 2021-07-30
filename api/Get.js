@@ -1,4 +1,5 @@
 const axios = require("axios");
+const Setup = require("./Setup");
 
 class Get {
     constructor(url, params) {
@@ -15,7 +16,7 @@ class Get {
     async _execute() {
         const config = {
             headers: {
-                "PRIVATE-TOKEN": "eYjHacj2YdVfSAnQvzk5"
+                "PRIVATE-TOKEN": Setup.get().personalAccessToken
             },
 
             params: {

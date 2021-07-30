@@ -2,6 +2,7 @@ const Get = require("../api/Get");
 const chalk = require("chalk");
 const Table = require("cli-table");
 const inquirer = require("inquirer");
+const Setup = require("../api/Setup");
 
 class Search {
     constructor(term) {
@@ -14,7 +15,12 @@ class Search {
                 scope: "blobs",
                 search: this.term
             };
-            let request = new Get('http://vm-gitlab.colombo.com.br/api/v4/projects/10/search', params);
+            const gitlabServerUrl = Setup.get().gitlabServerUrl;
+            const searchEndpoint = "projects/10/search";
+            const searchRequestUrl = gitlabServerUrl.endsWith("/") ? 
+                gitlabServerUrl + searchEndpoint : 
+                gitlabServerUrl + "/" + searchEndpoint;
+            let request = new Get(searchRequestUrl, params);
             await request.execute();
             if (request.empty()) {
                 console.log(`${chalk.red(`No results found for the ${chalk.white(`'${this.term}'`)} term!`)}`);
