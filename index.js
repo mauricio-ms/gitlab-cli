@@ -20,8 +20,6 @@ program.version(package.version);
 
 console.log(chalk.cyan(figlet.textSync("GitLab CLI")));
 
-// TODO SPECIFY GROUPS TO AVOID USELESS PROJECTS
-
 program
     .command("setup <gitlab-server-url> <personal-access-token>")
     .description("Setup the Gitlab Url of your server and your personal access token with read API permission")
