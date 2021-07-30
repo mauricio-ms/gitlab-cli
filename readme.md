@@ -1,4 +1,4 @@
-# Gitlab CLI
+# GitLab CLI
 CLI tool to perform tasks as advanced search in your GitLab repositories.
 
 # Getting started
