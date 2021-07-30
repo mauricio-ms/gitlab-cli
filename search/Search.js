@@ -1,13 +1,15 @@
 const Get = require("../api/Get");
-const chalk = require("chalk");
-const Table = require("cli-table");
 const inquirer = require("inquirer");
 const RequestUrl = require("../api/RequestUrl");
 
-// TODO DESACOPLAR EXIBIÇÃO DE BUSCA
 class Search {
     constructor(term) {
         this.term = term;
+        this._listeners = [];
+    }
+
+    addListener(listener) {
+        this._listeners = this._listeners.concat(listener);
     }
 
     async execute() {
@@ -20,20 +22,20 @@ class Search {
             let request = Get.of(searchRequestUrl, params);
             await request.execute();
             if (request.empty()) {
-                console.log(`${chalk.red(`No results found for the ${chalk.white(`'${this.term}'`)} term!`)}`);
+                this._dispatchOnEndWithoutResults();
                 return;
             }
 
             let loadNextPage;
             do {
                 if (request.empty()) {
-                    console.log(`${chalk.white(`No more results found!`)}`);
+                    this._dispatchOnNoMoreResults();
                     break;
                 } else {
-                    this.printResults(request.page, request.perPage, request.getData());
+                    this._dispatchOnNewPageListeners(request);
                 }
 
-                loadNextPage = await this.loadNextPage(request);
+                loadNextPage = await this._loadNextPage(request);
                 if (loadNextPage) {
                     request.loadNextPage();
                 }
@@ -43,7 +45,19 @@ class Search {
         }
     }
 
-    async loadNextPage(request) {
+    _dispatchOnNewPageListeners(request) {
+        this._listeners.forEach(l => l.onNewPage(request));
+    }
+
+    _dispatchOnNoMoreResults() {
+        this._listeners.forEach(l => l.onNoMoreResults());
+    }
+
+    _dispatchOnEndWithoutResults() {
+        this._listeners.forEach(l => l.onEndWithoutResults(this.term));
+    }
+
+    async _loadNextPage(request) {
         if (!request.hasNextPage()) {
             return false;
         }
@@ -57,19 +71,6 @@ class Search {
         ]);
 
         return answers.loadNextPage;
-    }
-
-    printResults(page, perPage, data) {
-        const table = new Table({
-            head: ["Row", "Branch", "Project", "File", "Start Line"],
-            colWidths: [10, 20, 10, 90, 15]
-        });
-        data.map((result, index) =>
-            table.push(
-                [(page-1)*perPage + index, result.ref, result.project_id, result.basename, result.startline]
-            )
-        );
-        console.log(table.toString());
     }
 }
 

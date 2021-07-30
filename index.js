@@ -11,6 +11,7 @@ const package = require("./package.json");
 
 const Setup = require("./api/Setup");
 const Search = require("./search/Search");
+const PrintSearchResultsListener = require("./search/PrintSearchResultsListener");
 
 program.version(package.version);
 
@@ -47,7 +48,9 @@ program
             ]);
             term = answers.term;
         }
-        new Search(term).execute();
+        const search = new Search(term);
+        search.addListener(new PrintSearchResultsListener());
+        search.execute();
     });
 
 program.parse(process.argv);
