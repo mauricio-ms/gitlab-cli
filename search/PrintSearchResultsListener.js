@@ -1,18 +1,24 @@
+const _ = require("lodash");
 const chalk = require("chalk");
 const Table = require("cli-table");
 
 class PrintSearchResultsListener {
 
+    constructor(projects) {
+        this.projects = projects;
+    }
+
     onNewPage(request) {
         const table = new Table({
             head: ["Row", "Branch", "Project", "File", "Start Line"],
-            colWidths: [10, 20, 10, 90, 15]
+            colWidths: [10, 15, 20, 90, 15]
         });
-        request.getData().map((result, index) =>
+        request.getData().forEach((result, index) => {
+            const projectName = this.projects[_.findIndex(this.projects, project => project.id == result.project_id)].name
             table.push(
-                [(request.page-1)*request.perPage + index, result.ref, result.project_id, result.basename, result.startline]
+                [(request.page - 1) * request.perPage + index, result.ref, projectName, result.basename, result.startline]
             )
-        );
+        });
         console.log(table.toString());
     }
 

@@ -4,7 +4,7 @@ const RequestUrl = require("../api/RequestUrl");
 
 class Search {
     constructor(projects, term) {
-        this._projects = projects;
+        this._projects = projects.slice();
         this.term = term;
         this._listeners = [];
         this._foundSomeData = false;

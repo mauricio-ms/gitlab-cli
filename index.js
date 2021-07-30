@@ -51,7 +51,7 @@ program
         }
         const projects = await new GetProjects().execute();
         const search = new Search(projects, term);
-        search.addListener(new PrintSearchResultsListener());
+        search.addListener(new PrintSearchResultsListener(projects));
         search.execute();
     });
 
