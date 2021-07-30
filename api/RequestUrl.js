@@ -3,9 +3,7 @@ const Setup = require("./Setup");
 class RequestUrl {
     constructor(endpoint) {
         const gitlabServerUrl = Setup.get().gitlabServerUrl;
-        this._requestUrl = gitlabServerUrl.endsWith("/") ?
-            gitlabServerUrl + endpoint :
-            gitlabServerUrl + "/" + endpoint;
+        this._requestUrl = gitlabServerUrl + "/api/v4/" + endpoint;
     }
 
     get() {
