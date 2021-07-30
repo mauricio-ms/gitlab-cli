@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+module.exports.ROOT_PATH = __dirname;
+
 const program = require("commander");
 const inquirer = require("inquirer");
 const chalk = require("chalk");
@@ -7,14 +9,27 @@ const figlet = require("figlet");
 
 const package = require("./package.json");
 
+const Setup = require("./api/Setup");
 const Search = require("./search/Search");
 
 program.version(package.version);
 
 console.log(chalk.cyan(figlet.textSync("GitLab CLI")));
 
-// TODO CRIAR COMANDO SETUP PARA CONFIGURAR TOKEN E SERVIDOR
 // TODO BUSCAR LISTA DE PROJETOS
+
+program
+    .command("setup <gitlab-server-url> <personal-access-token>")
+    .description("Setup the Gitlab Url of your server and your personal access token with read API permission")
+    .action((gitlabServerUrl, personalAccessToken) => {
+        try {
+            Setup.of(gitlabServerUrl, personalAccessToken).save();
+            console.log(`${chalk.green("Setup performed with success!")}`);
+        } catch (err) {
+            console.log(`${chalk.red("Setup cannot be performed:")}`);
+            console.log(err);
+        }
+    });
 
 program
     .command("search [term]")
