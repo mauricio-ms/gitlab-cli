@@ -81,6 +81,9 @@ class Search {
                 message: "-- MORE --",
             },
         ]);
+        if (!answers.loadNextPage) {
+            this._projects = [];
+        }
 
         return answers.loadNextPage;
     }
