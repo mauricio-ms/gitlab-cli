@@ -3,9 +3,11 @@ const inquirer = require("inquirer");
 const RequestUrl = require("../api/RequestUrl");
 
 class Search {
-    constructor(term) {
+    constructor(projects, term) {
+        this._projects = projects;
         this.term = term;
         this._listeners = [];
+        this._foundSomeData = false;
     }
 
     addListener(listener) {
@@ -13,23 +15,33 @@ class Search {
     }
 
     async execute() {
+        while (this._projects.length > 0) {
+            await this._execute(this._projects.shift());
+        }
+    }
+
+    async _execute(project) {
         try {
             const params = {
                 scope: "blobs",
                 search: this.term
             };
-            const searchRequestUrl = new RequestUrl("/projects/10/search").get();
+            const searchRequestUrl = new RequestUrl(`/projects/${project.id}/search`).get();
             let request = Get.of(searchRequestUrl, params);
             await request.execute();
-            if (request.empty()) {
+            if (this._projects.length === 0 && request.empty() && !this._foundSomeData) {
                 this._dispatchOnEndWithoutResults();
                 return;
             }
+            
+            this._foundSomeData = true;
 
             let loadNextPage;
             do {
                 if (request.empty()) {
-                    this._dispatchOnNoMoreResults();
+                    if (this._projects.length === 0) {
+                        this._dispatchOnNoMoreResults();
+                    }
                     break;
                 } else {
                     this._dispatchOnNewPageListeners(request);

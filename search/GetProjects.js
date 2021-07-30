@@ -1,3 +1,5 @@
+const _ = require("lodash");
+
 const Get = require("../api/Get");
 const RequestUrl = require("../api/RequestUrl");
 
@@ -21,7 +23,12 @@ class GetProjects {
                     console.log(`${chalk.white(`No more results found!`)}`);
                     break;
                 } else {
-                    this._addPageResults(request.getData().map(project => project.name));
+                    this._addPageResults(request.getData().map(project => {
+                        return {
+                            id: project.id,
+                            name: project.name
+                        };
+                    }));
                 }
 
                 if (request.hasNextPage()) {
@@ -29,7 +36,7 @@ class GetProjects {
                 }
             } while (loadNextPage);
 
-            return this._results;
+            return _.sortBy(this._results, "name");
         } catch (err) {
             console.error(err);
             return this._results;

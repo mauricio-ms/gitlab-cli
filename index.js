@@ -12,6 +12,7 @@ const package = require("./package.json");
 const Setup = require("./api/Setup");
 const Search = require("./search/Search");
 const PrintSearchResultsListener = require("./search/PrintSearchResultsListener");
+const GetProjects = require("./search/GetProjects");
 
 program.version(package.version);
 
@@ -36,9 +37,9 @@ program
 program
     .command("search [term]")
     .description("Search for an term across all your Gitlab repositories")
-    .action(async (term, options) => {
+    .action(async term => {
         if (!term) {
-            answers = await inquirer.prompt([
+            const answers = await inquirer.prompt([
                 {
                     type: "input",
                     name: "term",
@@ -48,7 +49,8 @@ program
             ]);
             term = answers.term;
         }
-        const search = new Search(term);
+        const projects = await new GetProjects().execute();
+        const search = new Search(projects, term);
         search.addListener(new PrintSearchResultsListener());
         search.execute();
     });
