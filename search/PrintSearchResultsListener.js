@@ -11,7 +11,7 @@ class PrintSearchResultsListener {
     onNewPage(request) {
         const table = new Table({
             head: ["Row", "Branch", "Project", "File", "Start Line"],
-            colWidths: [10, 15, 20, 90, 15]
+            colWidths: [10, 15, 30, 90, 15]
         });
         request.getData().forEach((result, index) => {
             const projectName = this.projects[_.findIndex(this.projects, project => project.id == result.project_id)].name
