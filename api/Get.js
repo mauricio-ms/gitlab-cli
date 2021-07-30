@@ -2,11 +2,20 @@ const axios = require("axios");
 const Setup = require("./Setup");
 
 class Get {
-    constructor(url, params) {
+
+    static of(url, params = {}) {
+        return new Get(url, params, 20);
+    }
+
+    static withMaxPerPage(url, params = {}) {
+        return new Get(url, params, 100);
+    }
+
+    constructor(url, params, perPage) {
         this.url = url;
         this.params = params;
         this.page = 1;
-        this.perPage = 20;
+        this.perPage = perPage;
     }
 
     async execute() {

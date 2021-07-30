@@ -17,6 +17,7 @@ program.version(package.version);
 console.log(chalk.cyan(figlet.textSync("GitLab CLI")));
 
 // TODO BUSCAR LISTA DE PROJETOS
+// TODO SPECIFY GROUPS TO AVOID USELESS PROJECTS
 
 program
     .command("setup <gitlab-server-url> <personal-access-token>")

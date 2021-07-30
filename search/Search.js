@@ -2,8 +2,9 @@ const Get = require("../api/Get");
 const chalk = require("chalk");
 const Table = require("cli-table");
 const inquirer = require("inquirer");
-const Setup = require("../api/Setup");
+const RequestUrl = require("../api/RequestUrl");
 
+// TODO DESACOPLAR EXIBIÇÃO DE BUSCA
 class Search {
     constructor(term) {
         this.term = term;
@@ -15,12 +16,8 @@ class Search {
                 scope: "blobs",
                 search: this.term
             };
-            const gitlabServerUrl = Setup.get().gitlabServerUrl;
-            const searchEndpoint = "projects/10/search";
-            const searchRequestUrl = gitlabServerUrl.endsWith("/") ? 
-                gitlabServerUrl + searchEndpoint : 
-                gitlabServerUrl + "/" + searchEndpoint;
-            let request = new Get(searchRequestUrl, params);
+            const searchRequestUrl = new RequestUrl("/projects/10/search").get();
+            let request = Get.of(searchRequestUrl, params);
             await request.execute();
             if (request.empty()) {
                 console.log(`${chalk.red(`No results found for the ${chalk.white(`'${this.term}'`)} term!`)}`);
@@ -74,6 +71,6 @@ class Search {
         );
         console.log(table.toString());
     }
-};
+}
 
 module.exports = Search;
